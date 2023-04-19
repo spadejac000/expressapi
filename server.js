@@ -1,10 +1,17 @@
 const express = require('express');
 const app = express();
 
-const port = 3000;
+const port = 5000;
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
+app.get('/testdb', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT $1::text as message', ['Hello world!']);
+    const message = result.rows[0].message;
+    res.send(`Message from database: ${message}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error connecting to database');
+  }
 });
 
 app.listen(port, () => {
